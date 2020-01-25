@@ -16,19 +16,20 @@ jsreport.init().then(async () => {
   const file = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8')
   const template = Handlebars.compile(file)
   const date = moment()
-  const month = date.format('M')
+  const month = date.format('MM')
   const year = date.format('YY')
   const fullYear = date.format('YYYY')
   for (const person of data) {
     console.log(`Rendering template for ${person.name}..`)
     const names = person.name.split(' ')
     const initials = `${names[0].charAt(0).toUpperCase()}${names[1].charAt(0).toUpperCase()}`
-    const invoiceNo = `${year}${month}_${initials}_001`
+    const index = person.invoiceOverride || '001'
+    const invoiceNo = `${year}-${month}-${index}`
     const data = {
       ...person,
       invoiceNo,
-      from: `1.${month}.${fullYear}`,
-      to: date.endOf('month').format('DD.MM.YYYY'),
+      from: person.fromOverride || `1.${month}.${fullYear}`,
+      to: person.toOverride || date.endOf('month').format('DD.MM.YYYY'),
       date: moment().format('DD.MM.YYYY'),
     }
     const content = template(data)
@@ -45,7 +46,7 @@ jsreport.init().then(async () => {
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir);
     }
-    fs.writeFileSync(`${dir}/${invoiceNo}.pdf`, out.content,'binary')
+    fs.writeFileSync(`${dir}/${initials}-${invoiceNo}.pdf`, out.content, 'binary')
     console.log('Saved.')
   }
   process.exit(0)
