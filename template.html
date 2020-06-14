@@ -167,22 +167,24 @@
         </td>
       </tr>
 
+      {{#each items}}
       <tr class="item">
         <td>
-          Full-stack developer<br>
-          {{from}} to {{to}}
+          {{this.description}}<br>
+          {{this.from}} to {{this.to}}
         </td>
 
         <td>
-          {{amount}} EUR
+          {{this.amount}} EUR
         </td>
       </tr>
+      {{/each}}
 
       <tr class="total">
         <td></td>
 
         <td>
-          Total Amount: {{amount}} EUR
+          Total Amount: {{total}} EUR
         </td>
       </tr>
       <tr class="due-date">
