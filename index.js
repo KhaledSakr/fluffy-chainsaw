@@ -41,6 +41,7 @@ jsreport.init().then(async () => {
         to: item.toOverride || date.endOf('month').format('DD.MM.YYYY'),
         amount: itemAmount(item).toFixed(2),
       })),
+      bankName: person.bankName || person.name,
       total: person.items.reduce((sum, item) => sum + itemAmount(item), 0).toFixed(2),
       date: moment().format('DD.MM.YYYY'),
     }
