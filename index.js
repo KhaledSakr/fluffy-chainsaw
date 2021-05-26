@@ -55,7 +55,7 @@ jsreport.init().then(async () => {
         },
       },
     })
-    const dir = `./invoices/${date.format('MM_YYYY')}`
+    const dir = `./invoices/${date.format('YYYY_MM')}`
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir);
     }
