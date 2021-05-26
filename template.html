@@ -170,8 +170,10 @@
       {{#each items}}
       <tr class="item">
         <td>
-          {{this.description}}<br>
-          {{this.from}} to {{this.to}}
+          {{this.description}}
+          {{#unless this.hideFromTo }}
+          <br>{{this.from}} to {{this.to}}
+          {{/unless}}
         </td>
 
         <td>
