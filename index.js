@@ -10,13 +10,23 @@ const jsreport = require('jsreport-core')(jsreportOptions)
 const fs = require('fs')
 const Handlebars = require('handlebars')
 const moment = require('moment')
+const { program } = require('commander')
+
+program
+  .option('-d, --data <file>', 'a json file containing an array of invoice data', 'data/data.json')
+  .option('-c, --company <file>', 'a json file containing the invoiced company data', 'data/company.json')
+
+program.parse()
+
+const options = program.opts()
 
 const itemAmount = (item) => {
   return item.rate ? (item.amount * item.rate) : item.amount
 }
 
 jsreport.init().then(async () => {
-  const data = require(process.argv[2] || './data.json')
+  const data = require(path.join(__dirname, options.data))
+  const companyData = require(path.join(__dirname, options.company))
   const file = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8')
   const template = Handlebars.compile(file)
   const date = moment()
@@ -34,6 +44,7 @@ jsreport.init().then(async () => {
     const invoiceNo = `${year}-${month}-${index}`
     const data = {
       ...person,
+      ...companyData,
       invoiceNo,
       items: person.items.map(item => ({
         ...item,
@@ -55,9 +66,9 @@ jsreport.init().then(async () => {
         },
       },
     })
-    const dir = `./invoices/${date.format('YYYY_MM')}`
+    const dir = `./data/invoices/${companyData.companyShortName}/${date.format('YYYY_MM')}`
     if (!fs.existsSync(dir)){
-      fs.mkdirSync(dir);
+      fs.mkdirSync(dir, { recursive: true });
     }
     fs.writeFileSync(`${dir}/${initials}-${invoiceNo}.pdf`, out.content, 'binary')
     console.log('Saved.')
