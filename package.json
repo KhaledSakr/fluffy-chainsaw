@@ -9,10 +9,10 @@
   "dependencies": {
     "commander": "^8.0.0",
     "handlebars": "^4.5.3",
-    "jsreport-chrome-pdf": "^1.6.1",
-    "jsreport-core": "^2.6.2",
+    "jsreport-chrome-pdf": "^1.10.0",
+    "jsreport-core": "^2.10.1",
     "jsreport-jsrender": "^2.1.1",
     "moment": "^2.24.0",
-    "puppeteer": "^2.0.0"
+    "puppeteer": "^13.4.0"
   }
 }
