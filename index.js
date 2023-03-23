@@ -21,7 +21,7 @@ program.parse()
 const options = program.opts()
 
 const itemAmount = (item) => {
-  return item.rate ? (item.amount * item.rate) : item.amount
+  return (item.rate ? (item.amount * item.rate) : item.amount) + (item.additional || 0)
 }
 
 jsreport.init().then(async () => {
