@@ -53,7 +53,7 @@ jsreport.init().then(async () => {
         amount: itemAmount(item).toFixed(2),
       })),
       bankName: person.bankName || person.name,
-      total: person.items.reduce((sum, item) => sum + itemAmount(item), 0).toFixed(2),
+      total: person.items.filter(item => !item.execlude).reduce((sum, item) => sum + itemAmount(item), 0).toFixed(2),
       date: moment().format('DD.MM.YYYY'),
     }
     const content = template(data)

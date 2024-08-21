@@ -177,16 +177,18 @@
 
       {{#each items}}
       <tr class="item">
+        {{#unless this.execlude }}
         <td>
           {{this.description}}
           {{#unless this.hideFromTo }}
           <br>{{this.from}} to {{this.to}}
           {{/unless}}
         </td>
-
+        
         <td>
           {{this.amount}} EUR
         </td>
+        {{/unless}}
       </tr>
       {{/each}}
 
