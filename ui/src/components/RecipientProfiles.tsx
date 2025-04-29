@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { RecipientProfile } from '../types/types';
 import RecipientForm from './RecipientForm';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Trash2, Edit } from 'lucide-react';
 
 const RECIPIENT_PROFILES_KEY = 'recipientProfiles';
@@ -14,15 +14,26 @@ const RecipientProfilesComponent: React.FC = () => {
   const [editingProfile, setEditingProfile] = useState<Partial<RecipientProfile> | null>(null);
 
   useEffect(() => {
-    const savedProfiles = localStorage.getItem(RECIPIENT_PROFILES_KEY);
-    if (savedProfiles) {
-      setProfiles(JSON.parse(savedProfiles));
+    try {
+      const savedProfiles = localStorage.getItem(RECIPIENT_PROFILES_KEY);
+      if (savedProfiles) {
+        setProfiles(JSON.parse(savedProfiles));
+      }
+    } catch (error) {
+      console.error('Error loading recipient profiles from localStorage:', error);
+      localStorage.removeItem(RECIPIENT_PROFILES_KEY); // Clear corrupted data
+      setProfiles([]); // Reset state
     }
   }, []);
 
   const saveProfiles = (updatedProfiles: RecipientProfile[]) => {
-    setProfiles(updatedProfiles);
-    localStorage.setItem(RECIPIENT_PROFILES_KEY, JSON.stringify(updatedProfiles));
+    try {
+      setProfiles(updatedProfiles);
+      localStorage.setItem(RECIPIENT_PROFILES_KEY, JSON.stringify(updatedProfiles));
+    } catch (error) {
+      console.error('Error saving recipient profiles to localStorage:', error);
+      alert('Failed to save recipient profiles. Please try again.');
+    }
   };
 
   const handleAddRecipient = () => {

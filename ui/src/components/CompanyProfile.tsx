@@ -1,32 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { CompanyProfile } from '../types/types';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './ui/card';
 
 const COMPANY_PROFILE_KEY = 'companyProfile';
 
+const defaultProfile: CompanyProfile = {
+  name: '',
+  address: '',
+  email: '',
+  telephone: '',
+  companyLongName: '',
+  companyAddressLine1: '',
+  companyAddressLine2: '',
+  companyCountry: '',
+  companyShortName: '',
+};
+
 const CompanyProfileComponent: React.FC = () => {
-  const [profile, setProfile] = useState<CompanyProfile>({
-    name: '',
-    address: '',
-    email: '',
-    telephone: '',
-    companyLongName: '',
-    companyAddressLine1: '',
-    companyAddressLine2: '',
-    companyCountry: '',
-    companyShortName: '',
-  });
+  const [profile, setProfile] = useState<CompanyProfile>(defaultProfile);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const savedProfile = localStorage.getItem(COMPANY_PROFILE_KEY);
-    if (savedProfile) {
-      setProfile(JSON.parse(savedProfile));
-    } else {
-      setIsEditing(true); // Start in edit mode if no profile saved
+    try {
+      const savedProfile = localStorage.getItem(COMPANY_PROFILE_KEY);
+      if (savedProfile) {
+        setProfile(JSON.parse(savedProfile));
+      } else {
+        setIsEditing(true); // Start in edit mode if no profile saved
+      }
+    } catch (error) {
+      console.error('Error loading company profile from localStorage:', error);
+      localStorage.removeItem(COMPANY_PROFILE_KEY); // Clear corrupted data
+      setProfile(defaultProfile); // Reset state to default
+      setIsEditing(true); // Go to edit mode if loading failed
     }
   }, []);
 
@@ -39,8 +48,13 @@ const CompanyProfileComponent: React.FC = () => {
   };
 
   const handleSave = () => {
-    localStorage.setItem(COMPANY_PROFILE_KEY, JSON.stringify(profile));
-    setIsEditing(false);
+    try {
+      localStorage.setItem(COMPANY_PROFILE_KEY, JSON.stringify(profile));
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Error saving company profile to localStorage:', error);
+      alert('Failed to save company profile. Please try again.');
+    }
   };
 
   return (

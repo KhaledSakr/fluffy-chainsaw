@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import { CompanyProfile, RecipientProfile, InvoiceItem, InvoiceData } from '../types/types';
 import CompanyProfileComponent from './CompanyProfile';
 import RecipientProfilesComponent from './RecipientProfiles';
 import InvoiceItemsComponent from './InvoiceItems';
 import InvoicePreviewComponent from './InvoicePreview';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { Button } from './ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/card';
+import { Label } from './ui/label';
+import { Input } from './ui/input';
 
 const COMPANY_PROFILE_KEY = 'companyProfile';
 const RECIPIENT_PROFILES_KEY = 'recipientProfiles';
@@ -22,16 +23,28 @@ const InvoiceGenerator: React.FC = () => {
   const [showRecipientManager, setShowRecipientManager] = useState(false);
 
   useEffect(() => {
-    // Load company profile
-    const savedCompanyProfile = localStorage.getItem(COMPANY_PROFILE_KEY);
-    if (savedCompanyProfile) {
-      setCompanyProfile(JSON.parse(savedCompanyProfile));
+    // Load company profile with error handling
+    try {
+      const savedCompanyProfile = localStorage.getItem(COMPANY_PROFILE_KEY);
+      if (savedCompanyProfile) {
+        setCompanyProfile(JSON.parse(savedCompanyProfile));
+      }
+    } catch (error) {
+      console.error('Error loading company profile from localStorage:', error);
+      localStorage.removeItem(COMPANY_PROFILE_KEY); // Clear corrupted data
+      setCompanyProfile(null); // Reset state
     }
 
-    // Load recipient profiles
-    const savedRecipientProfiles = localStorage.getItem(RECIPIENT_PROFILES_KEY);
-    if (savedRecipientProfiles) {
-      setRecipientProfiles(JSON.parse(savedRecipientProfiles));
+    // Load recipient profiles with error handling
+    try {
+      const savedRecipientProfiles = localStorage.getItem(RECIPIENT_PROFILES_KEY);
+      if (savedRecipientProfiles) {
+        setRecipientProfiles(JSON.parse(savedRecipientProfiles));
+      }
+    } catch (error) {
+      console.error('Error loading recipient profiles from localStorage:', error);
+      localStorage.removeItem(RECIPIENT_PROFILES_KEY); // Clear corrupted data
+      setRecipientProfiles([]); // Reset state
     }
   }, []);
 
@@ -65,12 +78,18 @@ const InvoiceGenerator: React.FC = () => {
     // setSelectedRecipientId(null);
   };
 
-  // Reload recipients when returning from manager
+  // Reload recipients when returning from manager with error handling
   useEffect(() => {
     if (!showRecipientManager) {
-        const savedRecipientProfiles = localStorage.getItem(RECIPIENT_PROFILES_KEY);
-        if (savedRecipientProfiles) {
-          setRecipientProfiles(JSON.parse(savedRecipientProfiles));
+        try {
+            const savedRecipientProfiles = localStorage.getItem(RECIPIENT_PROFILES_KEY);
+            if (savedRecipientProfiles) {
+              setRecipientProfiles(JSON.parse(savedRecipientProfiles));
+            }
+        } catch (error) {
+            console.error('Error reloading recipient profiles from localStorage:', error);
+            localStorage.removeItem(RECIPIENT_PROFILES_KEY); // Clear corrupted data
+            setRecipientProfiles([]); // Reset state
         }
     }
   }, [showRecipientManager]);

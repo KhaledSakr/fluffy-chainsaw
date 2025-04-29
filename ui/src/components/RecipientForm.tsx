@@ -1,9 +1,9 @@
 import React from 'react';
 import { RecipientProfile } from '../types/types';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Button } from './ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from './ui/card';
 
 interface RecipientFormProps {
   recipient: Partial<RecipientProfile>; // Allow partial for new recipients

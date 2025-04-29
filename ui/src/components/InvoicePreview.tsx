@@ -1,7 +1,7 @@
 import React from 'react';
 import { CompanyProfile, RecipientProfile, InvoiceItem } from '../types/types';
 import moment from 'moment';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 interface InvoicePreviewProps {
   companyProfile: CompanyProfile | null;
