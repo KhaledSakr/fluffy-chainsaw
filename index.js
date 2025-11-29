@@ -33,15 +33,17 @@ jsreport.init().then(async () => {
   const month = date.format('MM')
   const year = date.format('YY')
   const fullYear = date.format('YYYY')
-  for (const person of data) {
+  for (const [index, person] of data.entries()) {
     if (person.skip) {
       continue
     }
     console.log(`Rendering template for ${person.name}..`)
     const names = person.name.split(' ')
-    const initials = `${names[0].charAt(0).toUpperCase()}${names[1].charAt(0).toUpperCase()}`
-    const index = person.invoiceOverride || '001'
-    const invoiceNo = `${year}-${month}-${index}`
+    const firstName = names[0]
+    const lastName = names[names.length - 1]
+    const initials = `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`
+    const invoiceIndex = person.invoiceOverride || '001'
+    const invoiceNo = `${year}-${month}-${invoiceIndex}`
     const data = {
       ...person,
       ...companyData,
@@ -70,7 +72,7 @@ jsreport.init().then(async () => {
     if (!fs.existsSync(dir)){
       fs.mkdirSync(dir, { recursive: true });
     }
-    fs.writeFileSync(`${dir}/${initials}-${invoiceNo}.pdf`, out.content, 'binary')
+    fs.writeFileSync(`${dir}/${initials}${index}-${invoiceNo}.pdf`, out.content, 'binary')
     console.log('Saved.')
   }
   process.exit(0)
